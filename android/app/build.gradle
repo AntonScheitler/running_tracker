@@ -6,6 +6,9 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def localPropertyApiToken = localProperties.getProperty("GOOGLE_MAPS_API_KEY")
+def GOOGLE_MAPS_API_KEY = localPropertyApiToken == null ? System.getenv('GOOGLE_MAPS_API_KEY') : localPropertyApiToken
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -47,10 +50,11 @@ android {
         applicationId "com.example.running_tracker"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 20
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders.GOOGLE_MAPS_API_KEY = GOOGLE_MAPS_API_KEY
     }
 
     buildTypes {
