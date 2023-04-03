@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:running_tracker/utils/handle_location.dart';
 
 class Recorder extends StatefulWidget {
   const Recorder({super.key});
@@ -11,17 +13,34 @@ class Recorder extends StatefulWidget {
 class _RecorderState extends State<Recorder> {
   late GoogleMapController _googleMapController;
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
-
   void _onMapCreated(GoogleMapController googleMapController) {
     _googleMapController = googleMapController;
   }
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      initialCameraPosition: CameraPosition(target: _center, zoom: 11.0),
-      onMapCreated: _onMapCreated,
-    );
+    return FutureBuilder<Position>(
+        future: getCurrentLocation(),
+        builder: (BuildContext context, AsyncSnapshot<Position> snapshot) {
+          if (snapshot.hasData) {
+            LatLng currentPosition =
+                LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
+            return GoogleMap(
+              initialCameraPosition:
+                  CameraPosition(target: currentPosition, zoom: 15.5),
+              onMapCreated: _onMapCreated,
+              markers: <Marker>{
+                Marker(
+                  markerId: const MarkerId("current location"),
+                  position: currentPosition,
+                )
+              },
+            );
+          } else if (snapshot.hasError) {
+            return const Text("could not obtain current position");
+          } else {
+            return const Text("loading...");
+          }
+        });
   }
 }
