@@ -12,9 +12,28 @@ class Recorder extends StatefulWidget {
 
 class _RecorderState extends State<Recorder> {
   late GoogleMapController _googleMapController;
+  BitmapDescriptor markerIcon =
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
 
   void _onMapCreated(GoogleMapController googleMapController) {
     _googleMapController = googleMapController;
+  }
+
+  void setMarker() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size.fromRadius(0.5)),
+            "assets/nav.png")
+        .then((icon) {
+      setState(() {
+        markerIcon = icon;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // setMarker();
+    super.initState();
   }
 
   @override
@@ -25,6 +44,7 @@ class _RecorderState extends State<Recorder> {
           if (snapshot.hasData) {
             LatLng currentPosition =
                 LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
+
             return GoogleMap(
               initialCameraPosition:
                   CameraPosition(target: currentPosition, zoom: 15.5),
@@ -33,7 +53,9 @@ class _RecorderState extends State<Recorder> {
                 Marker(
                   markerId: const MarkerId("current location"),
                   position: currentPosition,
-                )
+                  rotation: snapshot.data!.heading,
+                  icon: markerIcon,
+                ),
               },
             );
           } else if (snapshot.hasError) {
