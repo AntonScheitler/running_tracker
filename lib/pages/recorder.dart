@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:running_tracker/utils/handle_location.dart';
 
 class Recorder extends StatefulWidget {
@@ -12,6 +12,8 @@ class Recorder extends StatefulWidget {
 
 class _RecorderState extends State<Recorder> {
   late GoogleMapController _googleMapController;
+  late LatLng _currentPosition;
+
   BitmapDescriptor markerIcon =
       BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
 
@@ -38,22 +40,22 @@ class _RecorderState extends State<Recorder> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Position>(
+    return FutureBuilder<LocationData>(
         future: getCurrentLocation(),
-        builder: (BuildContext context, AsyncSnapshot<Position> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<LocationData> snapshot) {
           if (snapshot.hasData) {
-            LatLng currentPosition =
-                LatLng(snapshot.data!.latitude, snapshot.data!.longitude);
+            _currentPosition =
+                LatLng(snapshot.data!.latitude!, snapshot.data!.longitude!);
 
             return GoogleMap(
               initialCameraPosition:
-                  CameraPosition(target: currentPosition, zoom: 15.5),
+                  CameraPosition(target: _currentPosition, zoom: 15.5),
               onMapCreated: _onMapCreated,
               markers: <Marker>{
                 Marker(
                   markerId: const MarkerId("current location"),
-                  position: currentPosition,
-                  rotation: snapshot.data!.heading,
+                  position: _currentPosition,
+                  rotation: snapshot.data!.heading!,
                   icon: markerIcon,
                 ),
               },
