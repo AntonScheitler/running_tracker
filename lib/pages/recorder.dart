@@ -13,6 +13,7 @@ class Recorder extends StatefulWidget {
 class _RecorderState extends State<Recorder> {
   late GoogleMapController _googleMapController;
   late LatLng _currentPosition;
+  late double _currentHeading;
 
   BitmapDescriptor markerIcon =
       BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
@@ -43,6 +44,7 @@ class _RecorderState extends State<Recorder> {
 
         setState(() {
           _currentPosition = newPosition;
+          _currentHeading = newLocation.heading!;
         });
       }
     });
@@ -63,6 +65,7 @@ class _RecorderState extends State<Recorder> {
           if (snapshot.hasData) {
             _currentPosition =
                 LatLng(snapshot.data!.latitude!, snapshot.data!.longitude!);
+            _currentHeading = snapshot.data!.heading!;
 
             return GoogleMap(
               initialCameraPosition:
@@ -72,7 +75,7 @@ class _RecorderState extends State<Recorder> {
                 Marker(
                   markerId: const MarkerId("current location"),
                   position: _currentPosition,
-                  rotation: -snapshot.data!.heading!,
+                  rotation: _currentHeading + 180,
                   icon: markerIcon,
                 ),
               },
