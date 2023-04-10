@@ -32,9 +32,26 @@ class _RecorderState extends State<Recorder> {
     });
   }
 
+  void updateLocation() {
+    getLocation().onLocationChanged.listen((newLocation) {
+      LatLng newPosition =
+          LatLng(newLocation.latitude!, newLocation.longitude!);
+
+      if (_currentPosition != newPosition) {
+        _googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(target: newPosition, zoom: 15.5)));
+
+        setState(() {
+          _currentPosition = newPosition;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     // setMarker();
+    updateLocation();
     super.initState();
   }
 
@@ -55,7 +72,7 @@ class _RecorderState extends State<Recorder> {
                 Marker(
                   markerId: const MarkerId("current location"),
                   position: _currentPosition,
-                  rotation: snapshot.data!.heading!,
+                  rotation: -snapshot.data!.heading!,
                   icon: markerIcon,
                 ),
               },
