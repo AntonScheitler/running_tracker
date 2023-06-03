@@ -1,16 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:running_tracker/utils/handle_location.dart';
 
-class Recorder extends StatefulWidget {
-  const Recorder({super.key});
+class Map extends StatefulWidget {
+  const Map({super.key});
 
   @override
-  State<Recorder> createState() => _RecorderState();
+  State<Map> createState() => _MapState();
 }
 
-class _RecorderState extends State<Recorder> {
+class _MapState extends State<Map> {
   late GoogleMapController _googleMapController;
   late LatLng _currentPosition;
   late double _currentHeading;
@@ -53,7 +55,7 @@ class _RecorderState extends State<Recorder> {
   @override
   void initState() {
     // setMarker();
-    updateLocation();
+    // updateLocation();
     super.initState();
   }
 

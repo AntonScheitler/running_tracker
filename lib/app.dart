@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:running_tracker/pages/history.dart';
-import 'package:running_tracker/pages/recorder.dart';
+import 'package:running_tracker/pages/recorder/recorder.dart';
 import 'package:running_tracker/pages/feed.dart';
 
 class App extends StatefulWidget {
